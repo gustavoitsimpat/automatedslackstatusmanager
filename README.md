@@ -125,17 +125,26 @@ El script ejecuta automáticamente:
 
 ### current_status.json
 ```json
-[
-  {
-    "hostname": "Gustavo Cárdenas",
-    "userID": "U055JF3TRB8"
-  },
-  {
-    "hostname": "Gilberto Campos",
-    "userID": "UG39E9SSV"
-  }
-]
+{
+  "user_ids": [
+    "U055JF3TRB8",
+    "UG39E9SSV",
+    "UCW5N1XRP",
+    "U02MTBP4V2T"
+  ],
+  "old_user_ids": [
+    "U055JF3TRB8",
+    "UG39E9SSV",
+    "UCW5N1XRP",
+    "U02MTBP4V2T",
+    "U9999999999"
+  ]
+}
 ```
+
+**Campos:**
+- `user_ids`: Lista de userIDs de usuarios actualmente en la oficina
+- `old_user_ids`: Lista de userIDs de usuarios de la ejecución anterior (para detectar desconexiones)
 
 ### current_status.csv
 ```csv
@@ -151,14 +160,16 @@ U02MTBP4V2T
 **Script principal** que:
 - Ejecuta el escaneo de red
 - Compara con configuración
-- Genera archivos de salida
+- Genera archivos de salida con historial
+- Detecta desconexiones de usuarios
 - Actualiza status en Slack (automático)
 
 **Funciones principales:**
 - `run_network_scan()`: Ejecuta quick_ping.py
 - `run_slack_status_update()`: Ejecuta slack_status_manager.py
 - `find_users_in_office()`: Compara IPs activas
-- `save_current_status()`: Genera JSON y CSV
+- `save_current_status()`: Genera JSON y CSV con historial
+- `detect_disconnections()`: Detecta usuarios desconectados
 
 ### quick_ping.py
 **Escáner de red** que:
@@ -200,11 +211,41 @@ U02MTBP4V2T
    ↓
 5. Comparar IPs activas vs configuradas
    ↓
-6. Generar current_status.json y current_status.csv
+6. Generar current_status.json (con historial) y current_status.csv
    ↓
-7. Ejecutar slack_status_manager.py (automático)
+7. Detectar desconexiones de usuarios
    ↓
-8. Actualizar status de usuarios en Slack
+8. Ejecutar slack_status_manager.py (automático)
+   ↓
+9. Actualizar status de usuarios en Slack
+```
+
+## 🔍 Detección de Desconexiones
+
+El sistema ahora mantiene un historial de usuarios para detectar desconexiones:
+
+### Funcionamiento
+- **Primera ejecución**: Crea `user_ids` y `old_user_ids` vacío
+- **Ejecuciones posteriores**: Guarda `user_ids` anterior en `old_user_ids`
+- **Detección**: Compara ambos arrays para encontrar diferencias
+
+### Ejemplo de Uso
+```python
+import json
+
+# Cargar datos
+with open('current_status.json', 'r') as f:
+    data = json.load(f)
+
+current_users = set(data['user_ids'])
+old_users = set(data['old_user_ids'])
+
+# Detectar desconexiones
+disconnected = old_users - current_users
+connected = current_users - old_users
+
+print(f"Desconectados: {list(disconnected)}")
+print(f"Conectados: {list(connected)}")
 ```
 
 ## 📈 Integración con Slack

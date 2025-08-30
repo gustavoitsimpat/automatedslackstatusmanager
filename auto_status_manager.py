@@ -73,7 +73,7 @@ def find_users_in_office(network_data, config_data):
     return users_in_office
 
 def save_current_status(users_in_office, config_data, json_filename="current_status.json", csv_filename="current_status.csv"):
-    """Guarda el status actual en formato JSON y CSV."""
+    """Guarda el status actual en formato JSON y CSV con historial."""
     # Crear lista de userIDs de usuarios en la oficina
     user_ids = []
     
@@ -86,15 +86,33 @@ def save_current_status(users_in_office, config_data, json_filename="current_sta
             if is_in_office:
                 user_ids.append(user['userID'])
     
-    # Guardar archivo JSON con formato específico
+    # Cargar el estado anterior para crear el historial
+    old_user_ids = []
     try:
-        json_data = {"user_ids": user_ids}
+        with open(json_filename, 'r', encoding='utf-8') as f:
+            previous_data = json.load(f)
+            # Si el archivo tiene el formato nuevo, usar old_user_ids
+            if "old_user_ids" in previous_data:
+                old_user_ids = previous_data.get("old_user_ids", [])
+            else:
+                # Si es el formato antiguo, usar user_ids como old_user_ids
+                old_user_ids = previous_data.get("user_ids", [])
+    except (FileNotFoundError, json.JSONDecodeError, Exception):
+        # Si no existe el archivo o hay error, old_user_ids queda como lista vacía
+        pass
+    
+    # Guardar archivo JSON con formato específico incluyendo historial
+    try:
+        json_data = {
+            "user_ids": user_ids,
+            "old_user_ids": old_user_ids
+        }
         with open(json_filename, 'w', encoding='utf-8') as f:
             json.dump(json_data, f, indent=2, ensure_ascii=False)
     except Exception:
         pass
     
-    # Guardar archivo CSV con solo userIDs
+    # Guardar archivo CSV con solo userIDs actuales
     try:
         with open(csv_filename, 'w', encoding='utf-8', newline='') as f:
             for user_id in user_ids:
@@ -102,7 +120,16 @@ def save_current_status(users_in_office, config_data, json_filename="current_sta
     except Exception:
         pass
     
-    return user_ids
+    return user_ids, old_user_ids
+
+def detect_disconnections(user_ids, old_user_ids):
+    """Detecta usuarios que se desconectaron entre ejecuciones."""
+    if not old_user_ids:
+        return []
+    
+    # Encontrar usuarios que estaban antes pero no están ahora
+    disconnected_users = list(set(old_user_ids) - set(user_ids))
+    return disconnected_users
 
 def main():
     # Paso 1: Ejecutar escaneo de red
@@ -118,9 +145,12 @@ def main():
     
     # Paso 3: Analizar presencia y guardar status
     users_in_office = find_users_in_office(network_data, config_data)
-    user_ids = save_current_status(users_in_office, config_data)
+    user_ids, old_user_ids = save_current_status(users_in_office, config_data)
     
-    # Paso 4: Actualizar status en Slack (si hay usuarios detectados)
+    # Paso 4: Detectar desconexiones
+    disconnected_users = detect_disconnections(user_ids, old_user_ids)
+    
+    # Paso 5: Actualizar status en Slack (si hay usuarios detectados)
     if user_ids:
         run_slack_status_update()
 
