@@ -1,9 +1,9 @@
 {
   "scan_info": {
-    "date": "2025-08-30T15:03:56.370883",
+    "date": "2025-08-30T15:27:05.860339",
     "network": "10.0.0.0/24",
     "range_scanned": "10.0.0.1 - 10.0.0.254",
-    "total_devices": 40,
+    "total_devices": 42,
     "scan_duration": "Calculado al final"
   },
   "devices": [
@@ -33,7 +33,7 @@
     },
     {
       "ip": "10.0.0.42",
-      "hostname": "iPhone"
+      "hostname": "Desconocido"
     },
     {
       "ip": "10.0.0.47",
@@ -120,6 +120,10 @@
       "hostname": "simpat20pi"
     },
     {
+      "ip": "10.0.0.166",
+      "hostname": "Desconocido"
+    },
+    {
       "ip": "10.0.0.167",
       "hostname": "DESKTOP-95KM6VV"
     },
@@ -166,6 +170,10 @@
     {
       "ip": "10.0.0.226",
       "hostname": "Antonio-s-A53"
+    },
+    {
+      "ip": "10.0.0.238",
+      "hostname": "iPhone"
     }
   ]
 }

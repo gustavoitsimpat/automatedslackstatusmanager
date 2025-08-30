@@ -1,50 +1,16 @@
-[
-  {
-    "hostname": "Gustavo Cárdenas",
-    "userID": "U055JF3TRB8"
-  },
-  {
-    "hostname": "Gilberto Campos",
-    "userID": "UG39E9SSV"
-  },
-  {
-    "hostname": "Daniel Diego",
-    "userID": "UCW5N1XRP"
-  },
-  {
-    "hostname": "Jeff",
-    "userID": "U02MTBP4V2T"
-  },
-  {
-    "hostname": "Carlos Martínez",
-    "userID": "UC0J0QYTE"
-  },
-  {
-    "hostname": "Ismael Estrada",
-    "userID": "U035JN5N1SM"
-  },
-  {
-    "hostname": "Angel de Hoyos",
-    "userID": "U02BZ2QC8KX"
-  },
-  {
-    "hostname": "Rafael Ceballos",
-    "userID": "U020HV0SMU6"
-  },
-  {
-    "hostname": "Jesús Martínez",
-    "userID": "U01PQGAMGN6"
-  },
-  {
-    "hostname": "Elisa Ávila",
-    "userID": "U02MA01FCE7"
-  },
-  {
-    "hostname": "Mauricio Galindo",
-    "userID": "U02E8R9TF5Z"
-  },
-  {
-    "hostname": "Antonio Monge",
-    "userID": "U0396GB5C3Y"
-  }
-]
+{
+  "user_ids": [
+    "U055JF3TRB8",
+    "UG39E9SSV",
+    "UCW5N1XRP",
+    "U02MTBP4V2T",
+    "UC0J0QYTE",
+    "U035JN5N1SM",
+    "U02BZ2QC8KX",
+    "U020HV0SMU6",
+    "U01PQGAMGN6",
+    "U02MA01FCE7",
+    "U02E8R9TF5Z",
+    "U0396GB5C3Y"
+  ]
+}

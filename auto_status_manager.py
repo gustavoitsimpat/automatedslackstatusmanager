@@ -60,8 +60,7 @@ def find_users_in_office(network_data, config_data):
 
 def save_current_status(users_in_office, config_data, json_filename="current_status.json", csv_filename="current_status.csv"):
     """Guarda el status actual en formato JSON y CSV."""
-    # Crear lista completa con todos los usuarios configurados
-    all_users = []
+    # Crear lista de userIDs de usuarios en la oficina
     user_ids = []
     
     if 'users' in config_data:
@@ -71,16 +70,13 @@ def save_current_status(users_in_office, config_data, json_filename="current_sta
             
             # Solo incluir usuarios que están en la oficina
             if is_in_office:
-                all_users.append({
-                    "hostname": user['hostname'],
-                    "userID": user['userID']  # Usar el userID del Config.json
-                })
                 user_ids.append(user['userID'])
     
-    # Guardar archivo JSON simple
+    # Guardar archivo JSON con formato específico
     try:
+        json_data = {"user_ids": user_ids}
         with open(json_filename, 'w', encoding='utf-8') as f:
-            json.dump(all_users, f, indent=2, ensure_ascii=False)
+            json.dump(json_data, f, indent=2, ensure_ascii=False)
     except Exception:
         pass
     
