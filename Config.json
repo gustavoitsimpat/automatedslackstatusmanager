@@ -19,6 +19,18 @@
     {
       "ip": "10.0.0.180",
       "hostname": "Carlos Martínez"
+    },
+    {
+      "ip": "10.0.0.73",
+      "hostname": "Ismael Estrada"
+    },
+    {
+      "ip": "10.0.0.144",
+      "hostname": "Angel de Hoyos"
+    },
+    {
+      "ip": "10.0.0.57",
+      "hostname": "Rafael Ceballos"
     }
   ]
 }

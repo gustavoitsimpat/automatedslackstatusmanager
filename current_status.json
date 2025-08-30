@@ -23,5 +23,20 @@
     "ip": "10.0.0.180",
     "hostname": "Carlos Martínez",
     "status": "En la Oficina"
+  },
+  {
+    "ip": "10.0.0.73",
+    "hostname": "Ismael Estrada",
+    "status": "En la Oficina"
+  },
+  {
+    "ip": "10.0.0.144",
+    "hostname": "Angel de Hoyos",
+    "status": "En la Oficina"
+  },
+  {
+    "ip": "10.0.0.57",
+    "hostname": "Rafael Ceballos",
+    "status": "En la Oficina"
   }
 ]

@@ -157,9 +157,8 @@ def save_results_to_json(devices, network, filename=None):
     if os.path.exists(filename):
         try:
             os.remove(filename)
-            print(f"🗑️  Archivo anterior eliminado: {filename}")
-        except Exception as e:
-            print(f"⚠️  No se pudo eliminar archivo anterior: {e}")
+        except Exception:
+            pass
     
     # Crear lista simplificada con solo IP y Hostname
     simplified_devices = []
@@ -180,30 +179,21 @@ def save_results_to_json(devices, network, filename=None):
         "devices": simplified_devices
     }
     
-    with open(filename, 'w', encoding='utf-8') as f:
-        json.dump(scan_data, f, indent=2, ensure_ascii=False)
-    
-    return filename
+    try:
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(scan_data, f, indent=2, ensure_ascii=False)
+    except Exception:
+        pass
 
 def main():
-    print("🔍 ESCÁNER DE PING COMPLETO")
-    print("=" * 40)
-    
     # Obtener IP local
     local_ip = get_local_ip()
-    print(f"IP local: {local_ip}")
     
     # Obtener red base
     network = ".".join(local_ip.split(".")[:3])
-    print(f"Escaneando: {network}.1 - {network}.254")
-    print("(Escaneo completo de la red)")
-    print()
     
     # Escanear con múltiples hilos para mayor velocidad
     active_devices = []
-    total_scanned = 0
-    
-    print("🚀 Iniciando escaneo paralelo...")
     
     # Usar ThreadPoolExecutor para escaneo paralelo
     with ThreadPoolExecutor(max_workers=10) as executor:
@@ -214,60 +204,19 @@ def main():
         
         # Procesar resultados
         for future in as_completed(futures):
-            total_scanned += 1
             result = future.result()
-            
-            # Mostrar progreso
-            progress = (total_scanned / 254) * 100
-            print(f"\rProgreso: {progress:.1f}% ({total_scanned}/254)", end="", flush=True)
-            
             if result:
                 active_devices.append(result)
-                print(f"\r✅ {result['ip']} - {result['hostname']}")
-    
-    print(f"\n\n📊 RESULTADOS:")
-    print(f"Total escaneado: {total_scanned} IPs")
-    print(f"Dispositivos activos: {len(active_devices)}")
     
     if active_devices:
-        print(f"\n📱 Dispositivos encontrados ({len(active_devices)}):")
         # Ordenar por IP para mejor visualización
         active_devices.sort(key=lambda x: [int(i) for i in x['ip'].split('.')])
         
-        # Mostrar tabla en consola
-        print(f"{'IP':<15} {'HOSTNAME':<25} {'NOMBRE':<25} {'ESTADO':<10}")
-        print("-" * 80)
-        for device in active_devices:
-            print(f"{device['ip']:<15} {device['hostname']:<25} {device['name']:<25} {device['status']:<10}")
-        
         # Guardar resultados en archivo JSON
-        print(f"\n💾 Guardando resultados...")
-        json_file = save_results_to_json(active_devices, network)
-        
-        print(f"✅ Archivo JSON: {json_file}")
-        
-        # Mostrar estadísticas
-        print(f"\n📈 ESTADÍSTICAS:")
-        print(f"  - Rango escaneado: {network}.1 - {network}.254")
-        print(f"  - Dispositivos encontrados: {len(active_devices)}")
-        print(f"  - Porcentaje de ocupación: {(len(active_devices)/254)*100:.1f}%")
-        
-        # Identificar posibles rangos
-        if len(active_devices) > 10:
-            print(f"\n💡 SUGERENCIAS:")
-            print(f"  - Red con alta densidad de dispositivos")
-            print(f"  - Considerar escaneos más frecuentes")
-    else:
-        print("\n❌ No se encontraron dispositivos activos.")
-        print("💡 Verifica tu conexión de red")
+        save_results_to_json(active_devices, network)
 
 if __name__ == "__main__":
     try:
-        start_time = time.time()
         main()
-        end_time = time.time()
-        print(f"\n⏱️  Tiempo total: {end_time - start_time:.1f} segundos")
-    except KeyboardInterrupt:
-        print("\n\n⚠️  Escaneo interrumpido por el usuario.")
-    except Exception as e:
-        print(f"\n❌ Error: {e}")
+    except (KeyboardInterrupt, Exception):
+        pass

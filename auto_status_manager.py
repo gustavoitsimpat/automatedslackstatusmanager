@@ -58,15 +58,6 @@ def find_users_in_office(network_data, config_data):
     
     return users_in_office
 
-def simulate_slack_status_change(user):
-    """Simula el cambio de status en Slack para un usuario."""
-    # Simular delay de API de Slack
-    time.sleep(0.1)
-
-def generate_report(users_in_office, network_data, config_data):
-    """Genera un reporte de la comparación."""
-    pass
-
 def save_current_status(users_in_office, config_data, filename="current_status.json"):
     """Guarda el status actual en formato JSON simple."""
     # Crear lista completa con todos los usuarios configurados
@@ -102,14 +93,8 @@ def main():
     if not network_data or not config_data:
         return
     
-    # Paso 3: Analizar presencia
+    # Paso 3: Analizar presencia y guardar status
     users_in_office = find_users_in_office(network_data, config_data)
-    
-    # Paso 4: Procesar cambios de status
-    for user in users_in_office:
-        simulate_slack_status_change(user)
-    
-    # Paso 5: Guardar status actual
     save_current_status(users_in_office, config_data)
 
 if __name__ == "__main__":
