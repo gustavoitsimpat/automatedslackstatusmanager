@@ -188,6 +188,7 @@ U02MTBP4V2T
 - Lee userIDs desde `current_status.json`
 - Actualiza status de usuarios en Slack
 - Maneja desconexiones automáticamente
+- Respeta status de lunch automáticamente
 - Usa variables de entorno para tokens
 
 **Características:**
@@ -197,6 +198,7 @@ U02MTBP4V2T
 - **Detección automática de desconexiones**
 - **Status "Away" para usuarios desconectados**
 - **Status "At Simpat Tech" para usuarios en oficina**
+- **🛡️ Protección de status de lunch** (no modifica usuarios en almuerzo)
 - Ejecución única (no bucle infinito)
 - Output minimalista con resumen de resultados
 
@@ -224,6 +226,7 @@ U02MTBP4V2T
 9. Actualizar status en Slack:
    - Usuarios en oficina → "At Simpat Tech"
    - Usuarios desconectados → "Away"
+   - Usuarios en lunch → NO SE MODIFICA
 ```
 
 ## 🔍 Detección y Manejo de Desconexiones
@@ -238,7 +241,8 @@ El sistema ahora mantiene un historial de usuarios para detectar desconexiones y
 
 ### Status Automáticos
 - **🟢 Usuarios en oficina**: Status "At Simpat Tech" con emoji `:simpat:`
-- **🔴 Usuarios desconectados**: Status "Away" con emoji `:away:`
+- **🔴 Usuarios desconectados**: Status "Away" con emoji `:afk:`
+- **🛡️ Usuarios en lunch**: **NO SE MODIFICA** (respeta status existente)
 
 ### Ejemplo de Uso
 ```python
@@ -265,6 +269,28 @@ print(f"Conectados: {list(connected)}")
 DEFAULT_STATUS=At Simpat Tech
 AWAY_STATUS=Away
 ```
+
+### Protección de Status de Lunch
+
+El sistema detecta automáticamente usuarios en lunch y **NO modifica** su status:
+
+**Palabras clave detectadas:**
+- `lunch` (en cualquier idioma)
+- `almuerzo`
+- `comida`
+- `break`
+
+**Ejemplos de status protegidos:**
+- "Lunch" :pizza:
+- "En almuerzo" :fork_and_knife:
+- "Comida con cliente" :hamburger:
+- "Break time" :coffee:
+- "LUNCH BREAK" :sandwich:
+
+**Comportamiento:**
+- ✅ **Usuarios en lunch**: Status NO se modifica
+- ✅ **Usuarios en oficina**: Status → "At Simpat Tech"
+- ✅ **Usuarios desconectados**: Status → "Away"
 
 ## 📈 Integración con Slack
 
