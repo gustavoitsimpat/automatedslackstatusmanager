@@ -22,13 +22,17 @@ Este proyecto automatiza la detección de presencia en la oficina mediante:
 
 ```
 automatedslackstatusmanager/
-├── auto_status_manager.py    # Script principal
-├── quick_ping.py             # Escáner de red
-├── Config.json               # Configuración de usuarios
-├── current_status.json       # Salida JSON (hostname + userID)
-├── current_status.csv        # Salida CSV (solo userIDs)
-├── Simpat_Network.json       # Resultados del escaneo de red
-└── README.md                 # Este archivo
+├── auto_status_manager.py        # Script principal
+├── quick_ping.py                 # Escáner de red
+├── slack_status_manager.py       # Gestor de status de Slack
+├── Config.json                   # Configuración de usuarios
+├── .env                          # Variables de entorno (crear)
+├── env_example.txt               # Ejemplo de variables de entorno
+├── requirements.txt              # Dependencias de Python
+├── current_status.json           # Salida JSON (user_ids array)
+├── current_status.csv            # Salida CSV (solo userIDs)
+├── Simpat_Network.json           # Resultados del escaneo de red
+└── README.md                     # Este archivo
 ```
 
 ## 🛠️ Instalación
@@ -38,12 +42,47 @@ automatedslackstatusmanager/
 - Windows/Linux/macOS
 - Acceso a red local
 
+### Instalación de Dependencias
+```bash
+pip install -r requirements.txt
+```
+
 ### Configuración
 1. Clona o descarga el proyecto
-2. Configura el archivo `Config.json` con tus usuarios
-3. Ejecuta el script principal
+2. Instala las dependencias: `pip install -r requirements.txt`
+3. Configura el archivo `Config.json` con tus usuarios
+4. Crea un archivo `.env` con tus tokens de Slack (ver sección Variables de Entorno)
+5. Ejecuta el script principal
 
 ## ⚙️ Configuración
+
+### Variables de Entorno (.env)
+
+Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
+
+```env
+# Slack API Configuration
+SLACK_BOT_TOKEN=xoxb-your-bot-token-here
+SLACK_USER_TOKEN=xoxp-your-user-token-here
+
+# Network Configuration
+NETWORK_TIMEOUT=120
+SCAN_WORKERS=10
+
+# Status Configuration
+DEFAULT_STATUS=En la Oficina
+AWAY_STATUS=No disponible
+```
+
+**Variables requeridas:**
+- `SLACK_BOT_TOKEN`: Token de bot de Slack (xoxb-...)
+- `SLACK_USER_TOKEN`: Token de usuario de Slack (xoxp-...)
+
+**Variables opcionales:**
+- `NETWORK_TIMEOUT`: Timeout para escaneo de red (default: 120)
+- `SCAN_WORKERS`: Número de workers para escaneo paralelo (default: 10)
+- `DEFAULT_STATUS`: Status por defecto para usuarios en oficina (default: "En la Oficina")
+- `AWAY_STATUS`: Status para usuarios ausentes (default: "No disponible")
 
 ### Archivo Config.json
 ```json
@@ -131,6 +170,18 @@ U02MTBP4V2T
 - Detección ARP como respaldo
 - Sin output en consola
 
+### slack_status_manager.py
+**Gestor de status de Slack** que:
+- Lee userIDs desde `current_status.json`
+- Actualiza status de usuarios en Slack
+- Usa variables de entorno para tokens
+
+**Características:**
+- Validación de tokens
+- Manejo de errores de API
+- Status configurable desde variables de entorno
+- Ejecución única (no bucle infinito)
+
 ## 🔄 Flujo de Trabajo
 
 ```
@@ -145,26 +196,60 @@ U02MTBP4V2T
 5. Comparar IPs activas vs configuradas
    ↓
 6. Generar current_status.json y current_status.csv
+   ↓
+7. (Opcional) Ejecutar slack_status_manager.py
+   ↓
+8. Actualizar status de usuarios en Slack
 ```
 
 ## 📈 Integración con Slack
+
+### Usando slack_status_manager.py
+
+```bash
+# Ejecutar después de auto_status_manager.py
+python slack_status_manager.py
+```
+
+### Usando Variables de Entorno
+
+```python
+import os
+from dotenv import load_dotenv
+import json
+
+# Cargar variables de entorno
+load_dotenv()
+
+# Obtener tokens
+bot_token = os.getenv('SLACK_BOT_TOKEN')
+user_token = os.getenv('SLACK_USER_TOKEN')
+
+# Leer userIDs
+with open('current_status.json', 'r') as f:
+    data = json.load(f)
+    user_ids = data['user_ids']
+
+# Actualizar status en Slack
+for user_id in user_ids:
+    # Usar bot_token o user_token según necesites
+    update_slack_status(user_id, bot_token)
+```
 
 ### Usando JSON
 ```python
 import json
 
 with open('current_status.json', 'r') as f:
-    users = json.load(f)
+    data = json.load(f)
+    user_ids = data['user_ids']
     
-for user in users:
-    user_id = user['userID']
+for user_id in user_ids:
     # Actualizar status en Slack usando user_id
 ```
 
 ### Usando CSV
 ```python
-import csv
-
 with open('current_status.csv', 'r') as f:
     user_ids = [line.strip() for line in f]
     
@@ -226,6 +311,46 @@ schtasks /create /tn "SlackStatus" /tr "python C:\ruta\auto_status_manager.py" /
 # Ejecutar cada 5 minutos
 */5 * * * * /usr/bin/python3 /ruta/auto_status_manager.py
 ```
+
+## 🔒 Seguridad
+
+### Protección de Tokens
+
+**IMPORTANTE:** Nunca incluyas tokens de Slack directamente en el código.
+
+✅ **Correcto:**
+```env
+# .env (archivo local, no subir a Git)
+SLACK_BOT_TOKEN=xoxb-your-actual-token
+```
+
+❌ **Incorrecto:**
+```python
+# En el código
+token = "xoxb-your-actual-token"  # NUNCA hacer esto
+```
+
+### Archivos a Ignorar
+
+Asegúrate de que tu `.gitignore` incluya:
+```
+.env
+*.log
+__pycache__/
+*.pyc
+```
+
+### Obtención de Tokens de Slack
+
+1. **Bot Token (xoxb-...):**
+   - Ve a [api.slack.com/apps](https://api.slack.com/apps)
+   - Crea una nueva app
+   - Ve a "OAuth & Permissions"
+   - Copia el "Bot User OAuth Token"
+
+2. **User Token (xoxp-...):**
+   - Ve a [api.slack.com/custom-integrations/legacy-tokens](https://api.slack.com/custom-integrations/legacy-tokens)
+   - Genera un token para tu workspace
 
 ## 📄 Licencia
 
