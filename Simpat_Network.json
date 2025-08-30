@@ -1,9 +1,9 @@
 {
   "scan_info": {
-    "date": "2025-08-30T16:24:57.445675",
+    "date": "2025-08-30T16:29:48.933461",
     "network": "10.0.0.0/24",
     "range_scanned": "10.0.0.1 - 10.0.0.254",
-    "total_devices": 42,
+    "total_devices": 43,
     "scan_duration": "Calculado al final"
   },
   "devices": [
@@ -129,6 +129,10 @@
     },
     {
       "ip": "10.0.0.170",
+      "hostname": "Desconocido"
+    },
+    {
+      "ip": "10.0.0.175",
       "hostname": "Desconocido"
     },
     {

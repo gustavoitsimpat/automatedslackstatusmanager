@@ -101,6 +101,26 @@ def set_slack_status(client, user_id, status_text, status_emoji):
     except Exception as e:
         return False, f"Unexpected Error: {str(e)}"
 
+def clear_slack_status(client, user_id):
+    """
+    Borra el estado de Slack de un usuario (establece status vacío).
+    Retorna True si fue exitoso, False si hubo error.
+    """
+    try:
+        profile_data = {
+            "status_text": "",
+            "status_emoji": ""
+        }
+        client.users_profile_set(
+            user=user_id,
+            profile=json.dumps(profile_data)
+        )
+        return True, None
+    except SlackApiError as e:
+        return False, f"Slack API Error: {e.response['error']}"
+    except Exception as e:
+        return False, f"Unexpected Error: {str(e)}"
+
 def validate_tokens():
     """
     Valida que los tokens necesarios estén configurados.
@@ -149,7 +169,7 @@ if __name__ == "__main__":
                 failed_updates += 1
                 error_messages.append(f"User {user_id} (Office): {error}")
         
-        # Actualizar status de usuarios desconectados (Away)
+        # Borrar status de usuarios desconectados
         for user_id in disconnected_users:
             # Verificar si el usuario está en lunch
             current_status_text, current_status_emoji = get_user_current_status(slack_client, user_id)
@@ -158,17 +178,17 @@ if __name__ == "__main__":
                 skipped_lunch_users += 1
                 continue  # Saltar usuarios en lunch
             
-            success, error = set_slack_status(slack_client, user_id, AWAY_STATUS_TEXT, AWAY_STATUS_EMOJI)
+            success, error = clear_slack_status(slack_client, user_id)
             if success:
                 successful_updates += 1
             else:
                 failed_updates += 1
-                error_messages.append(f"User {user_id} (Away): {error}")
+                error_messages.append(f"User {user_id} (Clear): {error}")
         
         # Imprimir resumen final
         total_users = len(current_users) + len(disconnected_users)
         print(f"Slack Status Update Summary: {successful_updates} successful, {failed_updates} failed, {skipped_lunch_users} skipped (lunch)")
-        print(f"Users in office: {len(current_users)}, Users set to away: {len(disconnected_users)}")
+        print(f"Users in office: {len(current_users)}, Users status cleared: {len(disconnected_users)}")
         if error_messages:
             print(f"Errors: {'; '.join(error_messages[:3])}{'...' if len(error_messages) > 3 else ''}")
         elif successful_updates == 0 and failed_updates == 0 and skipped_lunch_users == 0:

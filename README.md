@@ -71,7 +71,6 @@ SCAN_WORKERS=10
 
 # Status Configuration
 DEFAULT_STATUS=At Simpat Tech
-AWAY_STATUS=Away
 ```
 
 **Variables requeridas:**
@@ -82,7 +81,6 @@ AWAY_STATUS=Away
 - `NETWORK_TIMEOUT`: Timeout para escaneo de red (default: 120)
 - `SCAN_WORKERS`: Número de workers para escaneo paralelo (default: 10)
 - `DEFAULT_STATUS`: Status por defecto para usuarios en oficina (default: "At Simpat Tech")
-- `AWAY_STATUS`: Status para usuarios desconectados (default: "Away")
 
 ### Archivo Config.json
 ```json
@@ -196,7 +194,7 @@ U02MTBP4V2T
 - Manejo de errores de API
 - Status configurable desde variables de entorno
 - **Detección automática de desconexiones**
-- **Status "Away" para usuarios desconectados**
+- **Borrado de status para usuarios desconectados**
 - **Status "At Simpat Tech" para usuarios en oficina**
 - **🛡️ Protección de status de lunch** (no modifica usuarios en almuerzo)
 - Ejecución única (no bucle infinito)
@@ -225,7 +223,7 @@ U02MTBP4V2T
    ↓
 9. Actualizar status en Slack:
    - Usuarios en oficina → "At Simpat Tech"
-   - Usuarios desconectados → "Away"
+   - Usuarios desconectados → Status borrado
    - Usuarios en lunch → NO SE MODIFICA
 ```
 
@@ -241,7 +239,7 @@ El sistema ahora mantiene un historial de usuarios para detectar desconexiones y
 
 ### Status Automáticos
 - **🟢 Usuarios en oficina**: Status "At Simpat Tech" con emoji `:simpat:`
-- **🔴 Usuarios desconectados**: Status "Away" con emoji `:afk:`
+- **🔴 Usuarios desconectados**: **Status borrado** (sin texto ni emoji)
 - **🛡️ Usuarios en lunch**: **NO SE MODIFICA** (respeta status existente)
 
 ### Ejemplo de Uso
@@ -267,7 +265,6 @@ print(f"Conectados: {list(connected)}")
 ```env
 # Variables de entorno (.env)
 DEFAULT_STATUS=At Simpat Tech
-AWAY_STATUS=Away
 ```
 
 ### Protección de Status de Lunch
@@ -290,7 +287,7 @@ El sistema detecta automáticamente usuarios en lunch y **NO modifica** su statu
 **Comportamiento:**
 - ✅ **Usuarios en lunch**: Status NO se modifica
 - ✅ **Usuarios en oficina**: Status → "At Simpat Tech"
-- ✅ **Usuarios desconectados**: Status → "Away"
+- ✅ **Usuarios desconectados**: Status → **BORRADO** (sin texto ni emoji)
 
 ## 📈 Integración con Slack
 
