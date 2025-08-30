@@ -1,57 +1,50 @@
 [
   {
-    "ip": "10.0.0.2",
     "hostname": "Gustavo Cárdenas",
-    "status": "En la Oficina"
+    "userID": "U055JF3TRB8"
   },
   {
-    "ip": "10.0.0.3",
     "hostname": "Gilberto Campos",
-    "status": "En la Oficina"
+    "userID": "UG39E9SSV"
   },
   {
-    "ip": "10.0.0.89",
     "hostname": "Daniel Diego",
-    "status": "En la Oficina"
+    "userID": "UCW5N1XRP"
   },
   {
-    "ip": "10.0.0.193",
     "hostname": "Jeff",
-    "status": "En la Oficina"
+    "userID": "U02MTBP4V2T"
   },
   {
-    "ip": "10.0.0.180",
     "hostname": "Carlos Martínez",
-    "status": "En la Oficina"
+    "userID": "UC0J0QYTE"
   },
   {
-    "ip": "10.0.0.73",
     "hostname": "Ismael Estrada",
-    "status": "En la Oficina"
+    "userID": "U035JN5N1SM"
   },
   {
-    "ip": "10.0.0.144",
     "hostname": "Angel de Hoyos",
-    "status": "En la Oficina"
+    "userID": "U02BZ2QC8KX"
   },
   {
-    "ip": "10.0.0.57",
     "hostname": "Rafael Ceballos",
-    "status": "En la Oficina"
+    "userID": "U020HV0SMU6"
   },
   {
-    "ip": "10.0.0.137",
-    "hostname": "Chuy Martínez",
-    "status": "En la Oficina"
+    "hostname": "Jesús Martínez",
+    "userID": "U01PQGAMGN6"
   },
   {
-    "ip": "10.0.0.72",
     "hostname": "Elisa Ávila",
-    "status": "En la Oficina"
+    "userID": "U02MA01FCE7"
   },
   {
-    "ip": "10.0.0.112",
     "hostname": "Mauricio Galindo",
-    "status": "En la Oficina"
+    "userID": "U02E8R9TF5Z"
+  },
+  {
+    "hostname": "Antonio Monge",
+    "userID": "U0396GB5C3Y"
   }
 ]

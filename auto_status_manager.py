@@ -58,26 +58,38 @@ def find_users_in_office(network_data, config_data):
     
     return users_in_office
 
-def save_current_status(users_in_office, config_data, filename="current_status.json"):
-    """Guarda el status actual en formato JSON simple."""
+def save_current_status(users_in_office, config_data, json_filename="current_status.json", csv_filename="current_status.csv"):
+    """Guarda el status actual en formato JSON y CSV."""
     # Crear lista completa con todos los usuarios configurados
     all_users = []
+    user_ids = []
     
     if 'users' in config_data:
         for user in config_data['users']:
             # Buscar si el usuario está en la oficina
             is_in_office = any(u['ip'] == user['ip'] for u in users_in_office)
             
-            all_users.append({
-                "ip": user['ip'],
-                "hostname": user['hostname'],
-                "status": "En la Oficina" if is_in_office else "No detectado"
-            })
+            # Solo incluir usuarios que están en la oficina
+            if is_in_office:
+                all_users.append({
+                    "hostname": user['hostname'],
+                    "userID": user['userID']  # Usar el userID del Config.json
+                })
+                user_ids.append(user['userID'])
     
     # Guardar archivo JSON simple
     try:
-        with open(filename, 'w', encoding='utf-8') as f:
+        with open(json_filename, 'w', encoding='utf-8') as f:
             json.dump(all_users, f, indent=2, ensure_ascii=False)
+    except Exception:
+        pass
+    
+    # Guardar archivo CSV con solo userIDs
+    try:
+        with open(csv_filename, 'w', encoding='utf-8', newline='') as f:
+            f.write("userID\n")  # Encabezado
+            for user_id in user_ids:
+                f.write(f"{user_id}\n")
     except Exception:
         pass
 
