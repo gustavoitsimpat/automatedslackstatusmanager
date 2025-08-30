@@ -31,6 +31,18 @@
     {
       "ip": "10.0.0.57",
       "hostname": "Rafael Ceballos"
+    },
+    {
+      "ip": "10.0.0.137",
+      "hostname": "Chuy Martínez"
+    },
+    {
+      "ip": "10.0.0.72",
+      "hostname": "Elisa Ávila"
+    },
+    {
+      "ip": "10.0.0.112",
+      "hostname": "Mauricio Galindo"
     }
   ]
 }
