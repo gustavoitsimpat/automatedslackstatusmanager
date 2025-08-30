@@ -70,8 +70,8 @@ NETWORK_TIMEOUT=120
 SCAN_WORKERS=10
 
 # Status Configuration
-DEFAULT_STATUS=En la Oficina
-AWAY_STATUS=No disponible
+DEFAULT_STATUS=At Simpat Tech
+AWAY_STATUS=Away
 ```
 
 **Variables requeridas:**
@@ -81,8 +81,8 @@ AWAY_STATUS=No disponible
 **Variables opcionales:**
 - `NETWORK_TIMEOUT`: Timeout para escaneo de red (default: 120)
 - `SCAN_WORKERS`: Número de workers para escaneo paralelo (default: 10)
-- `DEFAULT_STATUS`: Status por defecto para usuarios en oficina (default: "En la Oficina")
-- `AWAY_STATUS`: Status para usuarios ausentes (default: "No disponible")
+- `DEFAULT_STATUS`: Status por defecto para usuarios en oficina (default: "At Simpat Tech")
+- `AWAY_STATUS`: Status para usuarios desconectados (default: "Away")
 
 ### Archivo Config.json
 ```json
@@ -187,12 +187,16 @@ U02MTBP4V2T
 **Gestor de status de Slack** que:
 - Lee userIDs desde `current_status.json`
 - Actualiza status de usuarios en Slack
+- Maneja desconexiones automáticamente
 - Usa variables de entorno para tokens
 
 **Características:**
 - Validación de tokens
 - Manejo de errores de API
 - Status configurable desde variables de entorno
+- **Detección automática de desconexiones**
+- **Status "Away" para usuarios desconectados**
+- **Status "At Simpat Tech" para usuarios en oficina**
 - Ejecución única (no bucle infinito)
 - Output minimalista con resumen de resultados
 
@@ -217,17 +221,24 @@ U02MTBP4V2T
    ↓
 8. Ejecutar slack_status_manager.py (automático)
    ↓
-9. Actualizar status de usuarios en Slack
+9. Actualizar status en Slack:
+   - Usuarios en oficina → "At Simpat Tech"
+   - Usuarios desconectados → "Away"
 ```
 
-## 🔍 Detección de Desconexiones
+## 🔍 Detección y Manejo de Desconexiones
 
-El sistema ahora mantiene un historial de usuarios para detectar desconexiones:
+El sistema ahora mantiene un historial de usuarios para detectar desconexiones y actualizar automáticamente los status de Slack:
 
 ### Funcionamiento
 - **Primera ejecución**: Crea `user_ids` y `old_user_ids` vacío
 - **Ejecuciones posteriores**: Guarda `user_ids` anterior en `old_user_ids`
 - **Detección**: Compara ambos arrays para encontrar diferencias
+- **Actualización automática**: Cambia status según presencia
+
+### Status Automáticos
+- **🟢 Usuarios en oficina**: Status "At Simpat Tech" con emoji `:simpat:`
+- **🔴 Usuarios desconectados**: Status "Away" con emoji `:away:`
 
 ### Ejemplo de Uso
 ```python
@@ -246,6 +257,13 @@ connected = current_users - old_users
 
 print(f"Desconectados: {list(disconnected)}")
 print(f"Conectados: {list(connected)}")
+```
+
+### Configuración de Status
+```env
+# Variables de entorno (.env)
+DEFAULT_STATUS=At Simpat Tech
+AWAY_STATUS=Away
 ```
 
 ## 📈 Integración con Slack

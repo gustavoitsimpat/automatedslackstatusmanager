@@ -22,22 +22,30 @@ SLACK_USER_TOKEN = os.getenv('SLACK_USER_TOKEN')
 # El mensaje de estado y el emoji que se establecerán
 STATUS_TEXT = os.getenv('DEFAULT_STATUS', 'At Simpat Tech')
 STATUS_EMOJI = ":simpat:"
+AWAY_STATUS_TEXT = os.getenv('AWAY_STATUS', 'Away')
+AWAY_STATUS_EMOJI = ":afk:"
 
 # --- FUNCIONES ---
 
-def get_user_ids_from_file(file_path):
+def get_user_data_from_file(file_path):
     """
-    Lee y carga los IDs de usuario desde un archivo JSON local.
+    Lee y carga los datos de usuario desde un archivo JSON local.
+    Retorna (current_users, old_users, disconnected_users)
     """
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
             config_data = json.load(file)
-            user_ids = config_data.get("user_ids", [])
-            return user_ids
+            current_users = config_data.get("user_ids", [])
+            old_users = config_data.get("old_user_ids", [])
+            
+            # Detectar usuarios desconectados
+            disconnected_users = list(set(old_users) - set(current_users))
+            
+            return current_users, old_users, disconnected_users
     except FileNotFoundError:
-        return []
+        return [], [], []
     except json.JSONDecodeError:
-        return []
+        return [], [], []
 
 def set_slack_status(client, user_id, status_text, status_emoji):
     """
@@ -74,9 +82,11 @@ if __name__ == "__main__":
     if not validate_tokens():
         sys.exit(1)
     
-    # Obtener la lista de usuarios del archivo de configuración
-    users_to_update = get_user_ids_from_file('current_status.json')
-    if not users_to_update:
+    # Obtener los datos de usuarios del archivo de configuración
+    current_users, old_users, disconnected_users = get_user_data_from_file('current_status.json')
+    
+    # Si no hay usuarios para actualizar, salir
+    if not current_users and not disconnected_users:
         sys.exit(1)
 
     # Crear una instancia del cliente de Slack usando el token de usuario
@@ -87,18 +97,29 @@ if __name__ == "__main__":
     failed_updates = 0
     error_messages = []
 
-    # Actualizar status de todos los usuarios
+    # Actualizar status de usuarios conectados (en la oficina)
     try:
-        for user_id in users_to_update:
+        for user_id in current_users:
             success, error = set_slack_status(slack_client, user_id, STATUS_TEXT, STATUS_EMOJI)
             if success:
                 successful_updates += 1
             else:
                 failed_updates += 1
-                error_messages.append(f"User {user_id}: {error}")
+                error_messages.append(f"User {user_id} (Office): {error}")
+        
+        # Actualizar status de usuarios desconectados (Away)
+        for user_id in disconnected_users:
+            success, error = set_slack_status(slack_client, user_id, AWAY_STATUS_TEXT, AWAY_STATUS_EMOJI)
+            if success:
+                successful_updates += 1
+            else:
+                failed_updates += 1
+                error_messages.append(f"User {user_id} (Away): {error}")
         
         # Imprimir resumen final
+        total_users = len(current_users) + len(disconnected_users)
         print(f"Slack Status Update Summary: {successful_updates} successful, {failed_updates} failed")
+        print(f"Users in office: {len(current_users)}, Users set to away: {len(disconnected_users)}")
         if error_messages:
             print(f"Errors: {'; '.join(error_messages[:3])}{'...' if len(error_messages) > 3 else ''}")
         elif successful_updates == 0 and failed_updates == 0:
