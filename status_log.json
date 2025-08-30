@@ -1,0 +1,49 @@
+{
+  "logs": [
+    {
+      "users_in_office": [
+        {
+          "ip": "10.0.0.2",
+          "hostname": "Gustavo Cárdenas",
+          "status": "En la Oficina"
+        }
+      ],
+      "total_users": 1
+    },
+    {
+      "users_in_office": [
+        {
+          "ip": "10.0.0.2",
+          "hostname": "Gustavo Cárdenas",
+          "status": "En la Oficina"
+        }
+      ],
+      "total_users": 1
+    },
+    {
+      "users_in_office": [
+        {
+          "ip": "10.0.0.2",
+          "hostname": "Gustavo Cárdenas",
+          "status": "En la Oficina"
+        },
+        {
+          "ip": "10.0.0.3",
+          "hostname": "Gilberto Campos",
+          "status": "En la Oficina"
+        },
+        {
+          "ip": "10.0.0.89",
+          "hostname": "Daniel Diego",
+          "status": "En la Oficina"
+        },
+        {
+          "ip": "10.0.0.193",
+          "hostname": "Jeff",
+          "status": "En la Oficina"
+        }
+      ],
+      "total_users": 4
+    }
+  ]
+}

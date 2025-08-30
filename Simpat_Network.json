@@ -1,0 +1,171 @@
+{
+  "scan_info": {
+    "date": "2025-08-30T13:34:44.873850",
+    "network": "10.0.0.0/24",
+    "range_scanned": "10.0.0.1 - 10.0.0.254",
+    "total_devices": 40,
+    "scan_duration": "Calculado al final"
+  },
+  "devices": [
+    {
+      "ip": "10.0.0.1",
+      "hostname": "unifi"
+    },
+    {
+      "ip": "10.0.0.2",
+      "hostname": "DESKTOP-GS8PPOB"
+    },
+    {
+      "ip": "10.0.0.3",
+      "hostname": "gil-xps"
+    },
+    {
+      "ip": "10.0.0.25",
+      "hostname": "Samsung"
+    },
+    {
+      "ip": "10.0.0.28",
+      "hostname": "A32-de-Rafael-de-Jesus"
+    },
+    {
+      "ip": "10.0.0.41",
+      "hostname": "WYZE_CAKP2JFUS-D03F27C4D2DC"
+    },
+    {
+      "ip": "10.0.0.42",
+      "hostname": "iPhone"
+    },
+    {
+      "ip": "10.0.0.47",
+      "hostname": "HP548BF3"
+    },
+    {
+      "ip": "10.0.0.54",
+      "hostname": "Desconocido"
+    },
+    {
+      "ip": "10.0.0.57",
+      "hostname": "DESKTOP-OF6N2HM"
+    },
+    {
+      "ip": "10.0.0.71",
+      "hostname": "iPad"
+    },
+    {
+      "ip": "10.0.0.72",
+      "hostname": "EAZ-SIMPAT"
+    },
+    {
+      "ip": "10.0.0.73",
+      "hostname": "DESKTOP-MSL4FV7"
+    },
+    {
+      "ip": "10.0.0.76",
+      "hostname": "Angel-s-S23-Ultra"
+    },
+    {
+      "ip": "10.0.0.79",
+      "hostname": "Mac"
+    },
+    {
+      "ip": "10.0.0.82",
+      "hostname": "Desconocido"
+    },
+    {
+      "ip": "10.0.0.89",
+      "hostname": "LAPTOP-DDB"
+    },
+    {
+      "ip": "10.0.0.100",
+      "hostname": "UAP-AC-ProSite"
+    },
+    {
+      "ip": "10.0.0.102",
+      "hostname": "DDB-Nokia-3310"
+    },
+    {
+      "ip": "10.0.0.112",
+      "hostname": "DESKTOP-O99K2LP"
+    },
+    {
+      "ip": "10.0.0.116",
+      "hostname": "Desconocido"
+    },
+    {
+      "ip": "10.0.0.125",
+      "hostname": "DESKTOP-3VVVPM3"
+    },
+    {
+      "ip": "10.0.0.127",
+      "hostname": "Desconocido"
+    },
+    {
+      "ip": "10.0.0.137",
+      "hostname": "MACBOOKPRO-5F79"
+    },
+    {
+      "ip": "10.0.0.142",
+      "hostname": "JEFF-s-S24"
+    },
+    {
+      "ip": "10.0.0.144",
+      "hostname": "DESKTOP-8MVSRTK"
+    },
+    {
+      "ip": "10.0.0.155",
+      "hostname": "Nest-Audio"
+    },
+    {
+      "ip": "10.0.0.157",
+      "hostname": "simpat20pi"
+    },
+    {
+      "ip": "10.0.0.167",
+      "hostname": "DESKTOP-95KM6VV"
+    },
+    {
+      "ip": "10.0.0.170",
+      "hostname": "Desconocido"
+    },
+    {
+      "ip": "10.0.0.180",
+      "hostname": "DESKTOP-4HPRW14"
+    },
+    {
+      "ip": "10.0.0.181",
+      "hostname": "POCO-X5-5G"
+    },
+    {
+      "ip": "10.0.0.184",
+      "hostname": "Desconocido"
+    },
+    {
+      "ip": "10.0.0.192",
+      "hostname": "Galaxy-A04"
+    },
+    {
+      "ip": "10.0.0.193",
+      "hostname": "SIMPAT-JEFF"
+    },
+    {
+      "ip": "10.0.0.208",
+      "hostname": "Desconocido"
+    },
+    {
+      "ip": "10.0.0.209",
+      "hostname": "JCS-MACBOOK-AIR"
+    },
+    {
+      "ip": "10.0.0.212",
+      "hostname": "UAP-AC-ProAzul"
+    },
+    {
+      "ip": "10.0.0.218",
+      "hostname": "Desconocido"
+    },
+    {
+      "ip": "10.0.0.226",
+      "hostname": "Antonio-s-A53"
+    }
+  ]
+}

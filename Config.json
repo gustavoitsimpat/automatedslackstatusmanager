@@ -1,0 +1,24 @@
+{
+  "users": [
+    {
+      "ip": "10.0.0.2",
+      "hostname": "Gustavo Cárdenas"
+    },
+    {
+      "ip": "10.0.0.3",
+      "hostname": "Gilberto Campos"
+    },
+    {
+      "ip": "10.0.0.89",
+      "hostname": "Daniel Diego"
+    },
+    {
+      "ip": "10.0.0.193",
+      "hostname": "Jeff"
+    },
+    {
+      "ip": "10.0.0.180",
+      "hostname": "Carlos Martínez"
+    }
+  ]
+}
