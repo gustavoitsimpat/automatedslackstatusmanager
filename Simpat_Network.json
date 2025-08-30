@@ -1,9 +1,9 @@
 {
   "scan_info": {
-    "date": "2025-08-30T14:17:15.351654",
+    "date": "2025-08-30T14:24:32.857466",
     "network": "10.0.0.0/24",
     "range_scanned": "10.0.0.1 - 10.0.0.254",
-    "total_devices": 39,
+    "total_devices": 40,
     "scan_duration": "Calculado al final"
   },
   "devices": [
@@ -38,6 +38,10 @@
     {
       "ip": "10.0.0.47",
       "hostname": "HP548BF3"
+    },
+    {
+      "ip": "10.0.0.54",
+      "hostname": "Desconocido"
     },
     {
       "ip": "10.0.0.57",
