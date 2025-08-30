@@ -1,9 +1,9 @@
 {
   "scan_info": {
-    "date": "2025-08-30T15:27:05.860339",
+    "date": "2025-08-30T16:04:00.345250",
     "network": "10.0.0.0/24",
     "range_scanned": "10.0.0.1 - 10.0.0.254",
-    "total_devices": 42,
+    "total_devices": 41,
     "scan_duration": "Calculado al final"
   },
   "devices": [
@@ -40,10 +40,6 @@
       "hostname": "HP548BF3"
     },
     {
-      "ip": "10.0.0.54",
-      "hostname": "Desconocido"
-    },
-    {
       "ip": "10.0.0.57",
       "hostname": "DESKTOP-OF6N2HM"
     },
@@ -69,7 +65,7 @@
     },
     {
       "ip": "10.0.0.82",
-      "hostname": "Desconocido"
+      "hostname": "Nest-Audio"
     },
     {
       "ip": "10.0.0.89",
@@ -113,7 +109,7 @@
     },
     {
       "ip": "10.0.0.155",
-      "hostname": "Nest-Audio"
+      "hostname": "Desconocido"
     },
     {
       "ip": "10.0.0.157",

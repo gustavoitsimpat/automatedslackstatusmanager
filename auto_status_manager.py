@@ -25,6 +25,20 @@ def run_network_scan():
     except Exception:
         return False
 
+def run_slack_status_update():
+    """Ejecuta la actualización de status de Slack usando slack_status_manager.py."""
+    try:
+        # Ejecutar slack_status_manager.py directamente (sin capturar salida)
+        result = subprocess.run([sys.executable, "slack_status_manager.py"], 
+                              timeout=60, capture_output=True)
+        
+        return result.returncode == 0
+            
+    except subprocess.TimeoutExpired:
+        return False
+    except Exception:
+        return False
+
 def load_json_file(filename):
     """Carga un archivo JSON y retorna su contenido."""
     try:
@@ -87,6 +101,8 @@ def save_current_status(users_in_office, config_data, json_filename="current_sta
                 f.write(f"{user_id}\n")
     except Exception:
         pass
+    
+    return user_ids
 
 def main():
     # Paso 1: Ejecutar escaneo de red
@@ -102,7 +118,11 @@ def main():
     
     # Paso 3: Analizar presencia y guardar status
     users_in_office = find_users_in_office(network_data, config_data)
-    save_current_status(users_in_office, config_data)
+    user_ids = save_current_status(users_in_office, config_data)
+    
+    # Paso 4: Actualizar status en Slack (si hay usuarios detectados)
+    if user_ids:
+        run_slack_status_update()
 
 if __name__ == "__main__":
     try:

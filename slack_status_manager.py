@@ -33,19 +33,16 @@ def get_user_ids_from_file(file_path):
         with open(file_path, 'r', encoding='utf-8') as file:
             config_data = json.load(file)
             user_ids = config_data.get("user_ids", [])
-            if user_ids:
-                print(f"[*] Cargados {len(user_ids)} IDs de usuario.")
             return user_ids
     except FileNotFoundError:
-        print(f"[!] Error: El archivo '{file_path}' no fue encontrado.")
         return []
     except json.JSONDecodeError:
-        print(f"[!] Error: El archivo '{file_path}' no es un JSON válido.")
         return []
 
 def set_slack_status(client, user_id, status_text, status_emoji):
     """
     Actualiza el estado de Slack de un usuario usando el token de usuario.
+    Retorna True si fue exitoso, False si hubo error.
     """
     try:
         profile_data = {
@@ -56,28 +53,23 @@ def set_slack_status(client, user_id, status_text, status_emoji):
             user=user_id,
             profile=json.dumps(profile_data)
         )
-        print(f"[*] Estado de Slack actualizado para el usuario {user_id}: {status_text} {status_emoji}")
+        return True, None
     except SlackApiError as e:
-        print(f"[!] Error al actualizar el estado del usuario {user_id}: {e.response['error']}")
+        return False, f"Slack API Error: {e.response['error']}"
     except Exception as e:
-        print(f"[!] Ocurrió un error inesperado: {e}")
+        return False, f"Unexpected Error: {str(e)}"
 
 def validate_tokens():
     """
     Valida que los tokens necesarios estén configurados.
     """
     if not SLACK_USER_TOKEN:
-        print("[!] Error: SLACK_USER_TOKEN no está configurado en el archivo .env")
         return False
-    
-    print("[*] Tokens validados correctamente")
     return True
 
 # --- LÓGICA PRINCIPAL ---
 
 if __name__ == "__main__":
-    print("--- Gestor de Status de Slack ---")
-    
     # Validar tokens
     if not validate_tokens():
         sys.exit(1)
@@ -85,24 +77,35 @@ if __name__ == "__main__":
     # Obtener la lista de usuarios del archivo de configuración
     users_to_update = get_user_ids_from_file('current_status.json')
     if not users_to_update:
-        print("[!] No se pudo cargar la lista de usuarios.")
         sys.exit(1)
 
     # Crear una instancia del cliente de Slack usando el token de usuario
     slack_client = WebClient(token=SLACK_USER_TOKEN)
 
-    print(f"[*] Actualizando status para {len(users_to_update)} usuarios...")
-    print(f"[*] Status: {STATUS_TEXT} {STATUS_EMOJI}")
+    # Contadores para el resumen
+    successful_updates = 0
+    failed_updates = 0
+    error_messages = []
 
     # Actualizar status de todos los usuarios
     try:
         for user_id in users_to_update:
-            set_slack_status(slack_client, user_id, STATUS_TEXT, STATUS_EMOJI)
+            success, error = set_slack_status(slack_client, user_id, STATUS_TEXT, STATUS_EMOJI)
+            if success:
+                successful_updates += 1
+            else:
+                failed_updates += 1
+                error_messages.append(f"User {user_id}: {error}")
         
-        print("[*] Proceso completado exitosamente.")
+        # Imprimir resumen final
+        print(f"Slack Status Update Summary: {successful_updates} successful, {failed_updates} failed")
+        if error_messages:
+            print(f"Errors: {'; '.join(error_messages[:3])}{'...' if len(error_messages) > 3 else ''}")
+        elif successful_updates == 0 and failed_updates == 0:
+            print("No users to update or token not configured")
         
     except KeyboardInterrupt:
-        print("\n[!] Proceso interrumpido por el usuario.")
+        sys.exit(1)
     except Exception as e:
-        print(f"[!] Error en el proceso principal: {e}")
+        print(f"Critical Error: {e}")
         sys.exit(1)

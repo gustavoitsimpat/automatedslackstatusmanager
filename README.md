@@ -152,9 +152,11 @@ U02MTBP4V2T
 - Ejecuta el escaneo de red
 - Compara con configuración
 - Genera archivos de salida
+- Actualiza status en Slack (automático)
 
 **Funciones principales:**
 - `run_network_scan()`: Ejecuta quick_ping.py
+- `run_slack_status_update()`: Ejecuta slack_status_manager.py
 - `find_users_in_office()`: Compara IPs activas
 - `save_current_status()`: Genera JSON y CSV
 
@@ -181,6 +183,9 @@ U02MTBP4V2T
 - Manejo de errores de API
 - Status configurable desde variables de entorno
 - Ejecución única (no bucle infinito)
+- Output minimalista con resumen de resultados
+
+**Nota:** Ejecutado automáticamente por `auto_status_manager.py`
 
 ## 🔄 Flujo de Trabajo
 
@@ -197,14 +202,25 @@ U02MTBP4V2T
    ↓
 6. Generar current_status.json y current_status.csv
    ↓
-7. (Opcional) Ejecutar slack_status_manager.py
+7. Ejecutar slack_status_manager.py (automático)
    ↓
 8. Actualizar status de usuarios en Slack
 ```
 
 ## 📈 Integración con Slack
 
-### Usando slack_status_manager.py
+### Integración Automática
+
+El `auto_status_manager.py` ahora ejecuta automáticamente `slack_status_manager.py`:
+
+```bash
+# Ejecutar todo el proceso (escaneo + Slack automático)
+python auto_status_manager.py
+```
+
+### Usando slack_status_manager.py (Independiente)
+
+Si prefieres ejecutar solo la actualización de Slack:
 
 ```bash
 # Ejecutar después de auto_status_manager.py
