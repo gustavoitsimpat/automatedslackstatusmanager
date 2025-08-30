@@ -87,7 +87,6 @@ def save_current_status(users_in_office, config_data, json_filename="current_sta
     # Guardar archivo CSV con solo userIDs
     try:
         with open(csv_filename, 'w', encoding='utf-8', newline='') as f:
-            f.write("userID\n")  # Encabezado
             for user_id in user_ids:
                 f.write(f"{user_id}\n")
     except Exception:
