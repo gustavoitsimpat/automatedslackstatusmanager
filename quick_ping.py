@@ -10,8 +10,15 @@ import platform
 import threading
 import time
 import json
+import sys
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
+
+# Configurar codificación para Windows
+if platform.system().lower() == "windows":
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
+    sys.stderr = codecs.getwriter('utf-8')(sys.stderr.detach())
 
 def get_local_ip():
     """Obtiene la IP local."""
