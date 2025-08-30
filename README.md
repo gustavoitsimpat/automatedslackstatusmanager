@@ -17,6 +17,10 @@ Este proyecto automatiza la detección de presencia en la oficina mediante:
 - ✅ **Salida múltiple** en JSON y CSV
 - ✅ **Ejecución silenciosa** sin output en consola
 - ✅ **Integración Slack** con userIDs únicos
+- ✅ **Logging estructurado** para debugging y monitoreo
+- ✅ **Timeouts adaptativos** basados en latencia de red
+- ✅ **Retry con backoff exponencial** para mayor confiabilidad
+- ✅ **Validación robusta** de configuración y datos
 
 ## 📁 Estructura del Proyecto
 
@@ -31,6 +35,7 @@ automatedslackstatusmanager/
 ├── current_status.json           # Salida JSON (user_ids array)
 ├── current_status.csv            # Salida CSV (solo userIDs)
 ├── Simpat_Network.json           # Resultados del escaneo de red
+├── *.log                         # Archivos de log (auto_status_manager.log, quick_ping.log, slack_status_manager.log)
 ├── README.md                     # Documentación principal
 ├── README_TESTS.md               # Documentación de pruebas
 ├── test_integration.py           # Pruebas de integración general
@@ -158,6 +163,53 @@ UCW5N1XRP
 U02MTBP4V2T
 ```
 
+### Archivos de Log
+
+El sistema genera archivos de log estructurados para debugging y monitoreo:
+
+#### auto_status_manager.log
+```
+2024-01-15 10:30:15,123 - auto_status_manager - INFO - Iniciando gestor automático de status de Slack
+2024-01-15 10:30:15,456 - auto_status_manager - INFO - Paso 1: Ejecutando escaneo de red
+2024-01-15 10:30:18,789 - auto_status_manager - INFO - Ejecutando escaneo de red con timeout de 5s
+2024-01-15 10:30:25,234 - auto_status_manager - INFO - Paso 2: Cargando archivos de configuración
+2024-01-15 10:30:25,345 - auto_status_manager - INFO - Archivo Config.json cargado exitosamente
+2024-01-15 10:30:25,456 - auto_status_manager - INFO - Validando configuración
+2024-01-15 10:30:25,567 - auto_status_manager - INFO - Configuración válida
+```
+
+#### quick_ping.log
+```
+2024-01-15 10:30:16,123 - quick_ping - INFO - Iniciando escaneo de red
+2024-01-15 10:30:16,234 - quick_ping - INFO - IP local detectada: 192.168.1.100
+2024-01-15 10:30:16,345 - quick_ping - INFO - Escaneando red: 192.168.1.0/24
+2024-01-15 10:30:16,456 - quick_ping - INFO - Usando 8 workers para escaneo paralelo
+2024-01-15 10:30:20,567 - quick_ping - INFO - Progreso: 50/254 IPs escaneadas, 12 dispositivos encontrados
+2024-01-15 10:30:25,678 - quick_ping - INFO - Progreso: 100/254 IPs escaneadas, 15 dispositivos encontrados
+2024-01-15 10:30:30,789 - quick_ping - INFO - Escaneo completado en 14.56 segundos
+2024-01-15 10:30:30,890 - quick_ping - INFO - Total de dispositivos encontrados: 18
+```
+
+#### slack_status_manager.log
+```
+2024-01-15 10:30:35,123 - slack_status_manager - INFO - Iniciando gestor de status de Slack
+2024-01-15 10:30:35,234 - slack_status_manager - INFO - Tokens de configuración válidos
+2024-01-15 10:30:35,345 - slack_status_manager - INFO - Datos cargados: 8 usuarios activos, 2 desconectados
+2024-01-15 10:30:35,456 - slack_status_manager - INFO - Cliente de Slack inicializado
+2024-01-15 10:30:35,567 - slack_status_manager - INFO - Procesando 8 usuarios en la oficina
+2024-01-15 10:30:36,678 - slack_status_manager - INFO - Status actualizado para usuario U055JF3TRB8
+2024-01-15 10:30:37,789 - slack_status_manager - INFO - Usuario UG39E9SSV está en lunch, saltando
+2024-01-15 10:30:38,890 - slack_status_manager - INFO - Procesando 2 usuarios desconectados
+2024-01-15 10:30:39,901 - slack_status_manager - INFO - Status borrado para usuario U9999999999
+```
+
+**Beneficios del logging estructurado:**
+- ✅ **Debugging detallado** de cada paso del proceso
+- ✅ **Monitoreo en tiempo real** del progreso
+- ✅ **Identificación rápida** de errores y problemas
+- ✅ **Análisis de rendimiento** con timestamps precisos
+- ✅ **Auditoría completa** de todas las operaciones
+
 ## 🔧 Scripts
 
 ### auto_status_manager.py
@@ -169,11 +221,20 @@ U02MTBP4V2T
 - Actualiza status en Slack (automático)
 
 **Funciones principales:**
-- `run_network_scan()`: Ejecuta quick_ping.py
-- `run_slack_status_update()`: Ejecuta slack_status_manager.py
+- `run_network_scan()`: Ejecuta quick_ping.py con timeout adaptativo
+- `run_slack_status_update()`: Ejecuta slack_status_manager.py con retry
 - `find_users_in_office()`: Compara IPs activas
 - `save_current_status()`: Genera JSON y CSV con historial
 - `detect_disconnections()`: Detecta usuarios desconectados
+- `ConfigValidator`: Valida configuración robustamente
+- `retry_with_backoff()`: Implementa retry con backoff exponencial
+- `get_adaptive_timeout()`: Calcula timeouts basados en latencia de red
+
+**Optimizaciones implementadas:**
+- ✅ **Logging estructurado** en `auto_status_manager.log`
+- ✅ **Validación de configuración** con reporte de errores detallado
+- ✅ **Timeouts adaptativos** basados en latencia de red
+- ✅ **Retry con backoff exponencial** para operaciones críticas
 
 ### quick_ping.py
 **Escáner de red** que:
@@ -182,10 +243,17 @@ U02MTBP4V2T
 - Guarda resultados en `Simpat_Network.json`
 
 **Características:**
-- Escaneo paralelo (10 workers)
-- Timeout optimizado (1-3 segundos)
+- Escaneo paralelo con workers dinámicos (CPU * 2)
+- Timeout adaptativo basado en latencia de red
 - Detección ARP como respaldo
 - Sin output en consola
+
+**Optimizaciones implementadas:**
+- ✅ **Logging estructurado** en `quick_ping.log`
+- ✅ **Timeouts adaptativos** (1-5 segundos según latencia)
+- ✅ **Workers dinámicos** basados en CPU disponible
+- ✅ **Retry con backoff** para ping y ARP
+- ✅ **Progreso en tiempo real** cada 50 IPs escaneadas
 
 ### slack_status_manager.py
 **Gestor de status de Slack** que:
@@ -205,6 +273,13 @@ U02MTBP4V2T
 - **🛡️ Protección de status de lunch** (no modifica usuarios en almuerzo)
 - Ejecución única (no bucle infinito)
 - Output minimalista con resumen de resultados
+
+**Optimizaciones implementadas:**
+- ✅ **Logging estructurado** en `slack_status_manager.log`
+- ✅ **Validación robusta** de datos de usuario
+- ✅ **Retry con backoff** para operaciones de API
+- ✅ **Manejo mejorado de errores** con logging detallado
+- ✅ **Validación de tokens** antes de ejecutar
 
 **Nota:** Ejecutado automáticamente por `auto_status_manager.py`
 
