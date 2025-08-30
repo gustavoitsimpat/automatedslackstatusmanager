@@ -27,12 +27,18 @@ automatedslackstatusmanager/
 ├── slack_status_manager.py       # Gestor de status de Slack
 ├── Config.json                   # Configuración de usuarios
 ├── .env                          # Variables de entorno (crear)
-├── env_example.txt               # Ejemplo de variables de entorno
 ├── requirements.txt              # Dependencias de Python
 ├── current_status.json           # Salida JSON (user_ids array)
 ├── current_status.csv            # Salida CSV (solo userIDs)
 ├── Simpat_Network.json           # Resultados del escaneo de red
-└── README.md                     # Este archivo
+├── README.md                     # Documentación principal
+├── README_TESTS.md               # Documentación de pruebas
+├── test_integration.py           # Pruebas de integración general
+├── test_network_scan.py          # Pruebas de escaneo de red
+├── test_slack_status.py          # Pruebas de gestión de Slack
+├── test_complete_system.py       # Pruebas del sistema completo
+├── test_configuration.py         # Validación de configuración
+└── run_all_tests.py              # Ejecutar todas las pruebas
 ```
 
 ## 🛠️ Instalación
@@ -371,17 +377,36 @@ for user_id in user_ids:
 
 ## 🔍 Solución de Problemas
 
+### Validación Automática
+Antes de reportar problemas, ejecuta los scripts de prueba:
+
+```bash
+# Validar configuración
+python test_configuration.py
+
+# Probar sistema completo
+python test_complete_system.py
+```
+
 ### Error: "No se encontró el archivo"
 - Verifica que `Config.json` existe
 - Asegúrate de que el formato JSON es válido
+- Ejecuta `python test_configuration.py` para validar
 
 ### Escaneo lento o incompleto
 - Verifica conectividad de red
 - Ajusta timeouts en `quick_ping.py` si es necesario
+- Ejecuta `python test_network_scan.py` para diagnosticar
 
 ### Usuarios no detectados
 - Verifica que las IPs en `Config.json` son correctas
 - Confirma que los dispositivos están en la red
+- Ejecuta `python test_configuration.py` para validar IPs
+
+### Problemas con Slack
+- Verifica que `SLACK_USER_TOKEN` está configurado en `.env`
+- Confirma que el token tiene permisos adecuados
+- Ejecuta `python test_slack_status.py` para diagnosticar
 
 ## 📝 Logs y Debugging
 
@@ -395,6 +420,27 @@ El sistema está diseñado para ejecutarse silenciosamente. Para debugging:
 2. **Verificar configuración**:
    - Formato de `Config.json`
    - IPs correctas de usuarios
+
+## 🧪 Pruebas y Validación
+
+El proyecto incluye un conjunto completo de scripts de prueba para validar el funcionamiento del sistema.
+
+### Scripts de Prueba Disponibles
+
+```bash
+# Ejecutar todas las pruebas (recomendado)
+python run_all_tests.py
+
+# Pruebas individuales
+python test_configuration.py      # Validación de configuración
+python test_integration.py        # Pruebas de integración general
+python test_network_scan.py       # Pruebas de escaneo de red
+python test_slack_status.py       # Pruebas de gestión de Slack
+python test_complete_system.py    # Pruebas del sistema completo
+```
+
+### Documentación de Pruebas
+Para información detallada sobre las pruebas, consulta [`README_TESTS.md`](README_TESTS.md).
 
 ## 🔄 Automatización
 
