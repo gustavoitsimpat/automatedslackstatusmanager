@@ -87,6 +87,19 @@ class SlackStatusManager:
             logger.error(f"Error borrando estado para {user_id}: {e}")
             return False
     
+    def is_admin_user(self, user_id: str) -> bool:
+        """Verifica si un usuario es administrador."""
+        try:
+            user_info = self.client.users_info(user=user_id)
+            user = user_info['user']
+            return user.get('is_admin', False) or user.get('is_owner', False) or user.get('is_primary_owner', False)
+        except SlackApiError as e:
+            logger.warning(f"No se pudo verificar si {user_id} es admin: {e}")
+            return False
+        except Exception as e:
+            logger.error(f"Error verificando admin status de {user_id}: {e}")
+            return False
+
     def execute_instructions(self, instructions: List[Dict]) -> Dict:
         """Ejecuta las instrucciones recibidas para cada usuario."""
         results = {
@@ -100,6 +113,12 @@ class SlackStatusManager:
             action = instruction['action']
             
             try:
+                # Verificar si el usuario es administrador
+                if self.is_admin_user(user_id):
+                    logger.info(f"Saltando usuario administrador {user_id}")
+                    results['skipped'].append(f"{user_id}: Saltado (usuario administrador)")
+                    continue
+                
                 if action == 'set_status':
                     success = self.set_user_status(user_id, DEFAULT_STATUS, STATUS_EMOJI)
                     if success:
@@ -152,22 +171,22 @@ def main():
         logger.info("=" * 50)
         logger.info("RESULTADOS DE LA EJECUCIÓN")
         logger.info("=" * 50)
-        logger.info(f"✅ Exitosos: {len(results['success'])}")
-        logger.info(f"❌ Fallidos: {len(results['failed'])}")
-        logger.info(f"⏭️ Saltados: {len(results['skipped'])}")
+        logger.info(f"[OK] Exitosos: {len(results['success'])}")
+        logger.info(f"[ERROR] Fallidos: {len(results['failed'])}")
+        logger.info(f"[SKIP] Saltados: {len(results['skipped'])}")
         
         if results['success']:
-            logger.info("\n✅ Operaciones exitosas:")
+            logger.info("\n[OK] Operaciones exitosas:")
             for success in results['success']:
                 logger.info(f"  - {success}")
         
         if results['failed']:
-            logger.info("\n❌ Operaciones fallidas:")
+            logger.info("\n[ERROR] Operaciones fallidas:")
             for failed in results['failed']:
                 logger.info(f"  - {failed}")
         
         if results['skipped']:
-            logger.info("\n⏭️ Operaciones saltadas:")
+            logger.info("\n[SKIP] Operaciones saltadas:")
             for skipped in results['skipped']:
                 logger.info(f"  - {skipped}")
         
