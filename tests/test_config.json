@@ -1,0 +1,19 @@
+{
+  "users": [
+    {
+      "ip": "10.0.0.2",
+      "hostname": "Usuario Prueba 1",
+      "userID": "U055JF3TRB8"
+    },
+    {
+      "ip": "10.0.0.3",
+      "hostname": "Usuario Prueba 2",
+      "userID": "UG39E9SSV"
+    },
+    {
+      "ip": "10.0.0.89",
+      "hostname": "Usuario Prueba 3",
+      "userID": "UCW5N1XRP"
+    }
+  ]
+}

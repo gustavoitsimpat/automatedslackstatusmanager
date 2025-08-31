@@ -1,0 +1,24 @@
+{
+  "users": [
+    {
+      "ip": "192.168.1.100",
+      "hostname": "Gustavo Cárdenas",
+      "userID": "U055JF3TRB8"
+    },
+    {
+      "ip": "192.168.1.101",
+      "hostname": "Gilberto Campos",
+      "userID": "UG39E9SSV"
+    },
+    {
+      "ip": "192.168.1.102",
+      "hostname": "Daniel Diego",
+      "userID": "UCW5N1XRP"
+    },
+    {
+      "ip": "192.168.1.103",
+      "hostname": "Usuario Ejemplo",
+      "userID": "U02MTBP4V2T"
+    }
+  ]
+}
