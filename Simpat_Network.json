@@ -1,9 +1,9 @@
 {
   "scan_info": {
-    "date": "2025-08-30T17:11:05.921121",
+    "date": "2025-08-30T20:15:10.910323",
     "network": "10.0.0.0/24",
     "range_scanned": "10.0.0.1 - 10.0.0.254",
-    "total_devices": 40,
+    "total_devices": 43,
     "scan_duration": "Calculado al final"
   },
   "devices": [
@@ -21,7 +21,7 @@
     },
     {
       "ip": "10.0.0.25",
-      "hostname": "Samsung"
+      "hostname": "Desconocido"
     },
     {
       "ip": "10.0.0.28",
@@ -80,6 +80,10 @@
       "hostname": "DESKTOP-O99K2LP"
     },
     {
+      "ip": "10.0.0.115",
+      "hostname": "Samsung"
+    },
+    {
       "ip": "10.0.0.116",
       "hostname": "Desconocido"
     },
@@ -124,6 +128,10 @@
       "hostname": "Desconocido"
     },
     {
+      "ip": "10.0.0.175",
+      "hostname": "Desconocido"
+    },
+    {
       "ip": "10.0.0.180",
       "hostname": "DESKTOP-4HPRW14"
     },
@@ -165,6 +173,10 @@
     },
     {
       "ip": "10.0.0.238",
+      "hostname": "Desconocido"
+    },
+    {
+      "ip": "10.0.0.251",
       "hostname": "iPhone"
     }
   ]
